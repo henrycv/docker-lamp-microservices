@@ -1,0 +1,39 @@
+code:
+    build: ./code
+    volumes:
+      - ./../../projects:/var/www/projects
+    tty: true
+
+mysql56:
+    image: 'mysql:5.6'
+    ports:
+        - 3306:3306
+    environment:
+        MYSQL_ROOT_PASSWORD: root
+    volumes:
+    - ./mysql56/data:/var/lib/mysql/:rw
+
+php56:
+  build: ./php56
+  ports:
+    - 9000:9000
+  volumes_from:
+    - code
+  links:
+    - mysql56:db
+  environment:
+    TERM: xterm
+
+nginx:
+  build: ./nginx
+  ports:
+    - 80:80
+    - 443:443
+  links:
+    - php56
+  volumes_from:
+    - code
+  volumes:
+    - ./nginx/sites:/etc/nginx/sites-enabled
+    - ./nginx/logs:/var/log/nginx:rw
+  restart: always

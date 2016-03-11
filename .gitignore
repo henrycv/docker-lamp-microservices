@@ -1,0 +1,4 @@
+.idea
+mysql56/data/*
+nginx/sites/*
+nginx/logs/*
